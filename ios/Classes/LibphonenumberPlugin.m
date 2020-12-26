@@ -110,7 +110,7 @@
 
 -(void) handleNormalizePhoneNumbers:(FlutterMethodCall*)call
                              result:(FlutterResult)result {
-    NSDictionary<NSString*, NSArray<NSString *> *> * phoneNumbers = call.arguments[@"phone_number"];
+    NSDictionary<NSString*, NSArray<NSString *> *> * phoneNumbers = call.arguments[@"phone_numbers"];
     NSString *isoCode = call.arguments[@"iso_code"];
     
     NSMutableDictionary<NSString *, NSArray<NSString *>*> *normalizedResult = @{}.mutableCopy;
