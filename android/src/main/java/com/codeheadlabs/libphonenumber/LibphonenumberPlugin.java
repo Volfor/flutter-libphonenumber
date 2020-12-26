@@ -12,8 +12,10 @@ import com.google.i18n.phonenumbers.PhoneNumberToCarrierMapper;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +39,9 @@ public class LibphonenumberPlugin implements MethodCallHandler {
         break;
       case "normalizePhoneNumber":
         handleNormalizePhoneNumber(call, result);
+        break;
+      case "normalizePhoneNumbers":
+        handleNormalizePhoneNumbers(call, result);
         break;
       case "getRegionInfo":
         handleGetRegionInfo(call, result);
@@ -91,6 +96,36 @@ public class LibphonenumberPlugin implements MethodCallHandler {
     } catch (NumberParseException e) {
       result.error("NumberParseException", e.getMessage(), null);
     }
+  }
+
+  private void handleNormalizePhoneNumbers(MethodCall call, Result result) {
+    final Map<String, List<String>> phoneNumbers = call.argument("phone_numbers");
+    final String isoCode = ((String) call.argument("iso_code")).toUpperCase();
+
+    Map<String, List<String>> normalizedResult = new HashMap<>();
+
+    for (Map.Entry<String, List<String>> entry : phoneNumbers.entrySet()) {
+      String contactId = entry.getKey();
+      List<String> phones = entry.getValue();
+
+      List<String> normalizedNumbers = new ArrayList<>();
+
+      for (int i = 0; i < phones.size(); i++) {
+        String phone = phones.get(i);
+
+        try {
+            Phonenumber.PhoneNumber p = phoneUtil.parse(phone, isoCode);
+            final String n = phoneUtil.format(p, PhoneNumberUtil.PhoneNumberFormat.E164);
+            normalizedNumbers.add(n);
+        } catch (NumberParseException e) {
+            // ignore
+        }
+      }
+
+      normalizedResult.put(contactId, normalizedNumbers);
+    }
+
+    result.success(normalizedResult);
   }
 
   private void handleGetRegionInfo(MethodCall call, Result result) {
@@ -163,7 +198,7 @@ public class LibphonenumberPlugin implements MethodCallHandler {
       result.error("NumberParseException", e.getMessage(), null);
     }
   }
-  
+
   private void formatAsYouType(MethodCall call, Result result) {
     final String phoneNumber = call.argument("phone_number");
     final String isoCode = call.argument("iso_code");
