@@ -124,13 +124,13 @@
                                                   defaultRegion:isoCode
                                                           error:&err];
             if(err != nil) {
-                // ignore
+                continue;
             }
             NSString *normalizedNumber = [self.phoneUtil format:phoneNumber
                                                    numberFormat:NBEPhoneNumberFormatE164
                                                           error:&err];
             if(err != nil) {
-                //ignore
+                continue;
             }
             [normalizedNumbers addObject:normalizedNumber];
         }
