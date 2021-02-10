@@ -115,6 +115,11 @@ public class LibphonenumberPlugin implements MethodCallHandler {
 
         try {
             Phonenumber.PhoneNumber p = phoneUtil.parse(phone, isoCode);
+            PhoneNumberUtil.PhoneNumberType t = phoneUtil.getNumberType(p);
+            if (t != PhoneNumberUtil.PhoneNumberType.MOBILE) {
+              continue;
+            }
+
             final String n = phoneUtil.format(p, PhoneNumberUtil.PhoneNumberFormat.E164);
             normalizedNumbers.add(n);
         } catch (NumberParseException e) {

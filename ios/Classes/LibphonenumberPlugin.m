@@ -126,6 +126,14 @@
             if(err != nil) {
                 continue;
             }
+
+            // filter non-mobile numbers (1 - mobile)
+            NSNumber *numberType = [NSNumber numberWithInteger:[self.phoneUtil getNumberType:phoneNumber]];
+
+            if(err != nil || [numberType intValue] != 1) {
+                continue;
+            }
+
             NSString *normalizedNumber = [self.phoneUtil format:phoneNumber
                                                    numberFormat:NBEPhoneNumberFormatE164
                                                           error:&err];
