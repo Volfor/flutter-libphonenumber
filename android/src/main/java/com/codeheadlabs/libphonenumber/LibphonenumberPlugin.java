@@ -101,6 +101,7 @@ public class LibphonenumberPlugin implements MethodCallHandler {
   private void handleNormalizePhoneNumbers(MethodCall call, Result result) {
     final Map<String, List<String>> phoneNumbers = call.argument("phone_numbers");
     final String isoCode = ((String) call.argument("iso_code")).toUpperCase();
+    final List<Integer> acceptedTypes = call.argument("accepted_types");
 
     Map<String, List<String>> normalizedResult = new HashMap<>();
 
@@ -115,6 +116,11 @@ public class LibphonenumberPlugin implements MethodCallHandler {
 
         try {
             Phonenumber.PhoneNumber p = phoneUtil.parse(phone, isoCode);
+            PhoneNumberUtil.PhoneNumberType t = phoneUtil.getNumberType(p);
+            if (!acceptedTypes.isEmpty() && !acceptedTypes.contains(t.ordinal())) {
+              continue;
+            }
+
             final String n = phoneUtil.format(p, PhoneNumberUtil.PhoneNumberFormat.E164);
             normalizedNumbers.add(n);
         } catch (NumberParseException e) {

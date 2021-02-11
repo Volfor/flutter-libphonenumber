@@ -112,6 +112,7 @@
                              result:(FlutterResult)result {
     NSDictionary<NSString*, NSArray<NSString *> *> * phoneNumbers = call.arguments[@"phone_numbers"];
     NSString *isoCode = call.arguments[@"iso_code"];
+    NSArray<NSNumber *> *acceptedTypes = call.arguments[@"accepted_types"];
     
     NSMutableDictionary<NSString *, NSArray<NSString *>*> *normalizedResult = @{}.mutableCopy;
     
@@ -126,6 +127,14 @@
             if(err != nil) {
                 continue;
             }
+
+            // filter number with acceptedTypes
+            NSNumber *numberType = [NSNumber numberWithInteger:[self.phoneUtil getNumberType:phoneNumber]];
+
+            if(err != nil || ![acceptedTypes containsObject:numberType]) {
+                continue;
+            }
+
             NSString *normalizedNumber = [self.phoneUtil format:phoneNumber
                                                    numberFormat:NBEPhoneNumberFormatE164
                                                           error:&err];
