@@ -131,7 +131,7 @@
             // filter number with acceptedTypes
             NSNumber *numberType = [NSNumber numberWithInteger:[self.phoneUtil getNumberType:phoneNumber]];
 
-            if(err != nil || ![acceptedTypes containsObject:numberType]) {
+            if(err != nil || ([acceptedTypes count] > 0 && ![acceptedTypes containsObject:numberType])) {
                 continue;
             }
 
