@@ -74,10 +74,13 @@ class PhoneNumberUtil {
   static Future<Map<String, List<String>>> normalizePhoneNumbers({
     @required Map<String, List<String>> phoneNumbers,
     @required String isoCode,
+    @required List<PhoneNumberType> acceptedTypes,
   }) async {
     final result = await _channel.invokeMethod('normalizePhoneNumbers', {
       'phone_numbers': phoneNumbers,
       'iso_code': isoCode,
+      'accepted_types':
+          acceptedTypes.map((PhoneNumberType e) => e.index).toList(),
     });
 
     return (result as Map<dynamic, dynamic>)

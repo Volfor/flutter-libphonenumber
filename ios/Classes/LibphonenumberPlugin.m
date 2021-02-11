@@ -112,6 +112,7 @@
                              result:(FlutterResult)result {
     NSDictionary<NSString*, NSArray<NSString *> *> * phoneNumbers = call.arguments[@"phone_numbers"];
     NSString *isoCode = call.arguments[@"iso_code"];
+    NSArray<NSNumber *> *acceptedTypes = call.arguments[@"accepted_types"];
     
     NSMutableDictionary<NSString *, NSArray<NSString *>*> *normalizedResult = @{}.mutableCopy;
     
@@ -127,10 +128,10 @@
                 continue;
             }
 
-            // filter non-mobile numbers (1 - mobile)
+            // filter number with acceptedTypes
             NSNumber *numberType = [NSNumber numberWithInteger:[self.phoneUtil getNumberType:phoneNumber]];
 
-            if(err != nil || [numberType intValue] != 1) {
+            if(err != nil || ![acceptedTypes containsObject:numberType]) {
                 continue;
             }
 
