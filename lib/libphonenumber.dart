@@ -70,10 +70,10 @@ class PhoneNumberUtil {
     }
 
   /// [phoneNumbers] - Map of {contactId: listOfPhones}
-  static Future<Map<String, List<String>>> normalizePhoneNumbers({
-    @required Map<String, List<String>> phoneNumbers,
-    @required String isoCode,
-    @required List<PhoneNumberType> acceptedTypes,
+  static Future<Map<String, List<String?>>> normalizePhoneNumbers({
+    required Map<String, List<String>> phoneNumbers,
+    required String isoCode,
+    required List<PhoneNumberType> acceptedTypes,
   }) async {
     final result = await _channel.invokeMethod('normalizePhoneNumbers', {
       'phone_numbers': phoneNumbers,
@@ -91,7 +91,7 @@ class PhoneNumberUtil {
     required String isoCode,
   }) async {
     Map<dynamic, dynamic> result =
-        await _channel.invokeMethod('getRegionInfo', {
+    await (_channel.invokeMethod('getRegionInfo', {
       'phone_number': phoneNumber,
       'iso_code': isoCode,
     }) as FutureOr<Map<dynamic, dynamic>>);
